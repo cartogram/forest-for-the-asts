@@ -18,6 +18,10 @@ img[alt~="rocket"] {
   width: 60%;
 }
 
+img[alt~="greta"] {
+  width: 60%;
+}
+
 /*********************************************
   * GLOBAL STYLES
   *********************************************/
@@ -39,8 +43,8 @@ img[alt~="rocket"] {
   --r-heading1-text-shadow: none;
   --r-heading1-size: 1em;
   --r-heading2-size: 1em;
-  --r-heading3-size: 1em;
-  --r-heading4-size: 1em;
+  --r-heading3-size: 0.6em;
+  --r-heading4-size: 0.6em;
   --r-code-font: monospace;
   --r-link-color: #000000;
   --r-link-color-dark: #000000;
@@ -113,10 +117,12 @@ img[alt~="rocket"] {
 
 .reveal h3 {
   font-size: var(--r-heading3-size);
+  text-align: left;
 }
 
 .reveal h4 {
   font-size: var(--r-heading4-size);
+  margin-top: 6em;
 }
 
 /*********************************************
@@ -157,9 +163,16 @@ img[alt~="rocket"] {
 .reveal ol,
 .reveal dl,
 .reveal ul {
-  display: inline-block;
   text-align: left;
   margin: 0 0 0 1em;
+}
+
+.reveal ol li,
+.reveal dl li,
+.reveal ul li {
+  margin-bottom: 1em;
+  text-align: left;
+  font-size: var(--r-heading4-size);
 }
 
 .reveal ol {
