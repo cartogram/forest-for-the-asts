@@ -4,8 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "reveal-md slides.md -w"
+    "dev": "reveal-md slides.md -w",
+    "build": "reveal-md slides.md --static public"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "reveal-md": "^5.1.3"
+  }
 }
