@@ -110,7 +110,7 @@ Note: And finally, we generate new code from the JSON and write that back to dis
 
 # 1. Parsing
 
-Turn code into an syntax tree
+Turn code into a syntax tree
 
 •
 
