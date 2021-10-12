@@ -54,7 +54,7 @@ Note: Like any new framework or product, the time it takes to get up and running
 
 ![Next js examples on github](images/nextjs-examples-github.png)
 
-Note: Create-x scripts such as create-react-app or create-next-app are the current defacto standard for project bootstrapping, but many of these are currently quite limited to cloning a template directory. This is not ideal as it doesn't provide much in the way of configurations and every new configuration comes with the maintenance overhead of a completely new template, and likely a lot of duplicate code.
+Note: Create-x scripts such as create-react-app or create-next-app are pretty standard for project bootstrapping, but many of these are currently quite limited to cloning a template directory. This is not ideal as it doesn't provide much in the way of configurations and every new configuration comes with the maintenance overhead of a completely new template, and likely a lot of duplicate code.
 
 And the chances that any defaults within these templates will be configured exactly to your preferences is highly unlikely. You might want to add tailwind or styled components or storybook or you might install your own internal library.
 
@@ -134,6 +134,36 @@ Note: These stages, Parsing, Transformation and Generation, are common to most c
 
 Note: For those not familiar: Babel is a tool that is most well known for being one of the first ways we began modifying code written using future Javascript features to a more browser compatible syntax.
 
+Each stage of the compiler is dealing with a different concern. Notice that nowhere are we managing stacks of template files, such as EJS or handlebar templates. We are operating only on the AST and the transform functions are input code agnostic.
+
+---
+
+```js [2|3-10]
+{
+  JSXElement(path) {
+    const {openingElement} = path.node;
+
+    if (openingElement.name.name === 'App') {
+        openingElement.attributes.push(
+          t.jsxAttribute(t.jsxIdentifier('someNewProp'), 'someValue'),
+        );
+      });
+    }
+  }
+  // ...other nodes we want to operate on
+};
+```
+
+Note: This is because it uses a common code pattern known as the Visitor pattern that allows for many unique and unrelated operations on the AST object. A main function will start by walking or traversing the tree and match nodes with transformation functions. These functions only care about the specific nodes they operate on, and couldn't care less about the rest your code outside of those points of interest.
+
+---
+
+[@shopify/ast-utilities](https://github.com/Shopify/quilt/tree/main/packages/ast-utilities)
+
+![@shopify/ast-utilities package](images/ast-utilities.png)
+
+Note: Because each operation is isolated and idempotent, they behave like the component primitive in React and we can group common operations into a shared package. This makes composing a series of common transforms trivial and the syntax very approachable. There are also some great tools, such as astexplorer.net or the babel playground, that can help you write and visualize AST transforms. I have a list of resources at the end of these slides.
+
 ---
 
 ```jsx
@@ -166,11 +196,15 @@ Note: At a basic level we might add an import for a Provider, use a hook, provid
 
 ---
 
-![greta Pretty cool right?](images/greta-pretty-cool.gif);
+![greta Pretty cool right?](images/greta-pretty-cool.gif)
 
 Note: With Hydrogen we want to be an opinionated framework when it matters most, but there are certain addons in your project that may not make sense for you right at the beginning. Should you decide later that the project requires it, we can provide a turn key process to add it down the road, and with all the best defaults out of the box.
 
-So what are we opinionated about? We care about Image performance, request caching and using Server Side Rendering and React Server Components to provide non-blocking responses, and eliminating client-side waterfalls.
+---
+
+![building blocks](images/building-blocks.png)
+
+Note: So what are we opinionated about? We care about Image performance, request caching and using Server Side Rendering and React Server Components to provide non-blocking responses, and eliminating client-side waterfalls.
 
 ---
 
@@ -218,8 +252,6 @@ Notes: We also audit your project for accessibility and security, conformance wi
 
 ---
 
-# Resources
-
 ### Reads
 
 - [Rome will be written in Rust by Jamie Kyle](https://rome.tools/blog/2021/09/21/rome-will-be-rewritten-in-rust)
@@ -228,14 +260,12 @@ Notes: We also audit your project for accessibility and security, conformance wi
 ### Code
 
 - [The super tiny compiler](https://github.com/jamiebuilds/the-super-tiny-compiler)
+- [Ast Explorer](https://astexplorer.net/)
+- [Babel REPL](https://babeljs.io/repl#?browsers=defaults%2C%20not%20ie%2011%2C%20not%20ie_mob%2011&build=&builtIns=false&corejs=3.6&spec=false&loose=false&code_lz=Q&debug=false&forceAllTransforms=false&shippedProposals=false&circleciRepo=&evaluate=false&fileSize=false&timeTravel=false&sourceType=module&lineWrap=true&presets=env%2Creact%2Cstage-2&prettier=false&targets=&version=7.15.8&externalPlugins=&assumptions=%7B%7D)
 
 ### Support
 
 - [Babel on Open Collective](https://opencollective.com/babel)
-
-### Colophon
-
-- [Reval MD](https://github.com/webpro/reveal-md)
 
 Note: So this has been a quick dive under the hood of how are leveraging compilers with everything from bootstrapping to enforcing best-practises to ongoing maintenance support and even internal testing. With the Hydrogen CLI, each of these interactions culminates into a powerful and fun developer experience.
 
